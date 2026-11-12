@@ -100,9 +100,10 @@ struct IslandView: View {
 
     // MARK: - Shell
 
-    /// 一块圆角矩形直接从刘海下方落下来
+    /// 顶部两个角是直角（和屏幕顶边、刘海连成一体直接伸下来），只有下面两个角是圆的，
+    /// 圆角半径 11 与刘海本身的圆角一致
     private var card: some View {
-        RoundedRectangle(cornerRadius: 20)
+        NotchCardShape(radius: 11)
             .fill(Color.black)
             .shadow(color: Color.black.opacity(0.30), radius: 14, x: 0, y: 6)
     }
@@ -181,4 +182,22 @@ struct IslandView: View {
 
 }
 
+/// 顶部直角、底部圆角：贴住屏幕顶边时，看起来就是刘海直接向下伸出来的一块
+struct NotchCardShape: Shape {
+    var radius: CGFloat
 
+    func path(in rect: CGRect) -> Path {
+        let r = min(radius, rect.height / 2)
+        var p = Path()
+        p.move(to: CGPoint(x: rect.minX, y: rect.minY))
+        p.addLine(to: CGPoint(x: rect.maxX, y: rect.minY))
+        p.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY - r))
+        p.addQuadCurve(to: CGPoint(x: rect.maxX - r, y: rect.maxY),
+                       control: CGPoint(x: rect.maxX, y: rect.maxY))
+        p.addLine(to: CGPoint(x: rect.minX + r, y: rect.maxY))
+        p.addQuadCurve(to: CGPoint(x: rect.minX, y: rect.maxY - r),
+                       control: CGPoint(x: rect.minX, y: rect.maxY))
+        p.closeSubpath()
+        return p
+    }
+}
