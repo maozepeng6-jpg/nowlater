@@ -808,7 +808,6 @@ private struct TodoDragPreview: View {
                 .font(.system(size: 12.5))
                 .foregroundStyle(item.done ? Color.primary : Color.secondary.opacity(0.55))
             TodoTitle(item: item)
-            if item.carried && !item.done { TodoCarriedBadge() }
         }
         .padding(.horizontal, PanelLayout.sidePadding)
         .padding(.vertical, 4)
@@ -831,17 +830,6 @@ private struct TodoTitle: View {
             .foregroundStyle(item.done ? Color.secondary.opacity(0.55) : Color.primary)
             .fixedSize(horizontal: false, vertical: true)
             .frame(maxWidth: .infinity, alignment: .leading)
-    }
-}
-
-private struct TodoCarriedBadge: View {
-    var body: some View {
-        Text("承接")
-            .font(.system(size: 8.5, weight: .medium))
-            .foregroundStyle(Color.secondary.opacity(0.6))
-            .padding(.horizontal, 4)
-            .padding(.vertical, 1.5)
-            .background(RoundedRectangle(cornerRadius: 3).fill(Color.secondary.opacity(0.12)))
     }
 }
 
@@ -899,7 +887,6 @@ private struct TodoRowView: View {
                     .contentShape(Rectangle())
                     .onTapGesture { if !isDragging { begin() } }
             }
-            if item.carried && !item.done { TodoCarriedBadge().padding(.top, 6) }
         }
         .padding(.horizontal, PanelLayout.sidePadding)
         .frame(minHeight: PanelLayout.row)

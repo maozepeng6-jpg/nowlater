@@ -219,7 +219,6 @@ private struct HistoryTaskRow: View {
             }
 
             if item.later { badge("稍后") }
-            if item.carried && !item.done { badge("承接") }
         }
         .frame(minHeight: 22)
         .onDisappear(perform: commit)

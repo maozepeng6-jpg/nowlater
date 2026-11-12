@@ -104,7 +104,7 @@ struct IslandView: View {
     /// 圆角半径 11 与刘海本身的圆角一致
     private var card: some View {
         NotchCardShape(radius: 11)
-            .fill(Color.black)
+            .fill(Color(.sRGB, red: 0, green: 0, blue: 0, opacity: 1))
             .shadow(color: Color.black.opacity(0.30), radius: 14, x: 0, y: 6)
     }
     // MARK: - Content
@@ -121,12 +121,6 @@ struct IslandView: View {
             Text(store.todayTitle)
                 .font(.system(size: 10.5, weight: .semibold))
                 .foregroundStyle(Color.white.opacity(0.52))
-
-            if store.carriedCount > 0 {
-                Text("承接 \(store.carriedCount)")
-                    .font(.system(size: 9.5))
-                    .foregroundStyle(Color.white.opacity(0.30))
-            }
 
             Spacer(minLength: 6)
 
