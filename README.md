@@ -4,7 +4,7 @@
 
 平时屏幕上什么都看不到。鼠标移到刘海那里点一下，面板就从刘海里长出来；点别处或按 Esc，它就缩回去。整包不到 3 MB，不需要 Xcode，一条脚本编译。
 
-![面板](preview-island.png)
+![从 Mac 刘海展开的 NowLater 面板](preview-island.png)
 
 ## 功能
 
@@ -19,7 +19,7 @@
 - 右键任一任务：编辑 / 拷贝文字
 - 数据在本地 `~/Library/Application Support/NowLater/`，纯 JSON，重启不丢
 
-![每日汇总](preview-history.png)
+![每日汇总：按天归档，一键导出 CSV](preview-history.png)
 
 ## 安装
 
