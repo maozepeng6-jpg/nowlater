@@ -100,13 +100,12 @@ struct IslandView: View {
 
     // MARK: - Shell
 
-    /// 顶部两个角是直角（和屏幕顶边、刘海连成一体），只有下面两个角是圆的
+    /// 顶部收窄到刘海宽度、向下扩散成整块：看起来就是灵动岛被点开撑大了
     private var card: some View {
-        NotchCardShape(radius: 20)
+        IslandCardShape(corner: 20, topWidth: 179, flare: 30)
             .fill(Color.black)
             .shadow(color: Color.black.opacity(0.30), radius: 14, x: 0, y: 6)
     }
-
     // MARK: - Content
 
     private var content: some View {
@@ -183,8 +182,7 @@ struct IslandView: View {
 }
 
 /// 顶部直角、底部圆角：贴住屏幕顶边时，看起来就是刘海/灵动岛本身向下延伸出来的一块
-struct NotchCardShape: Shape {
-    var radius: CGFloat
+struct NotchCardShape: Shape {    var radius: CGFloat
 
     func path(in rect: CGRect) -> Path {
         let r = min(radius, rect.height / 2)
@@ -197,6 +195,61 @@ struct NotchCardShape: Shape {
         p.addLine(to: CGPoint(x: rect.minX + r, y: rect.maxY))
         p.addQuadCurve(to: CGPoint(x: rect.minX, y: rect.maxY - r),
                        control: CGPoint(x: rect.minX, y: rect.maxY))
+        p.closeSubpath()
+        return p
+    }
+}
+
+/// 灵动岛展开的形状：顶部只有刘海那么宽（179），在 flare 高度内平滑扩到整块宽度，
+/// 底部圆角。顶部宽度与刘海一致，所以视觉上就是刘海自己被撑开、往下长出一块。
+struct IslandCardShape: Shape {
+    var corner: CGFloat = 20
+    var topWidth: CGFloat = 179
+    /// 顶部两角的小圆角，和刘海底部的圆角对齐，接缝才不会有尖角
+    var topCorner: CGFloat = 11
+    /// 先按刘海宽度垂直下落的距离，走完这段才开始变宽
+    var stem: CGFloat = 8
+    /// 从顶部宽度扩散到全宽所需的高度
+    var flare: CGFloat = 30
+
+    func path(in rect: CGRect) -> Path {
+        let w = rect.width
+        let halfTop = min(topWidth, w) / 2
+        let cx = rect.midX
+        let r = min(corner, rect.height / 2)
+        let tr = min(topCorner, halfTop)
+        let s = min(stem, rect.height / 2)
+        let f = min(flare, max(rect.height / 2 - s, 0))
+
+        var p = Path()
+        // 顶部：与刘海等宽的一段黑，两端带小圆角
+        p.move(to: CGPoint(x: cx - halfTop + tr, y: rect.minY))
+        p.addLine(to: CGPoint(x: cx + halfTop - tr, y: rect.minY))
+        p.addQuadCurve(to: CGPoint(x: cx + halfTop, y: rect.minY + tr),
+                       control: CGPoint(x: cx + halfTop, y: rect.minY))
+        // 沿刘海宽度下落
+        p.addLine(to: CGPoint(x: cx + halfTop, y: rect.minY + s))
+        // 右侧肩部：向下外扩到整块宽度
+        p.addCurve(to: CGPoint(x: rect.maxX, y: rect.minY + s + f),
+                   control1: CGPoint(x: cx + halfTop, y: rect.minY + s + f * 0.66),
+                   control2: CGPoint(x: rect.maxX, y: rect.minY + s + f * 0.18))
+        // 右边到底部圆角
+        p.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY - r))
+        p.addQuadCurve(to: CGPoint(x: rect.maxX - r, y: rect.maxY),
+                       control: CGPoint(x: rect.maxX, y: rect.maxY))
+        // 底边
+        p.addLine(to: CGPoint(x: rect.minX + r, y: rect.maxY))
+        p.addQuadCurve(to: CGPoint(x: rect.minX, y: rect.maxY - r),
+                       control: CGPoint(x: rect.minX, y: rect.maxY))
+        // 左边回到肩部
+        p.addLine(to: CGPoint(x: rect.minX, y: rect.minY + s + f))
+        p.addCurve(to: CGPoint(x: cx - halfTop, y: rect.minY + s),
+                   control1: CGPoint(x: rect.minX, y: rect.minY + s + f * 0.18),
+                   control2: CGPoint(x: cx - halfTop, y: rect.minY + s + f * 0.66))
+        // 沿刘海宽度回到顶部
+        p.addLine(to: CGPoint(x: cx - halfTop, y: rect.minY + tr))
+        p.addQuadCurve(to: CGPoint(x: cx - halfTop + tr, y: rect.minY),
+                       control: CGPoint(x: cx - halfTop, y: rect.minY))
         p.closeSubpath()
         return p
     }
