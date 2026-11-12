@@ -1,0 +1,18 @@
+{
+  "version": "1.0.5",
+  "appBytes": 1347578,
+  "sidePadding": 28,
+  "userDataUnchanged": true,
+  "processes": [
+    "<pid> NowLater.app/Contents/MacOS/NowLater"
+  ],
+  "checks": [
+    "27 native input hit locations across 3 real SwiftUI viewport sizes",
+    "blank area receives focus and saves input",
+    "long list 6 scroll positions: no area growth",
+    "Return Shift+Return Backspace and IME",
+    "drag layout and notch presentation",
+    "54 history regressions"
+  ],
+  "desktopMouseAutomationUsed": false
+}

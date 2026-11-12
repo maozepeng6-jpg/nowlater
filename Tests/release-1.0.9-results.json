@@ -1,0 +1,28 @@
+{
+  "version": "1.0.9",
+  "appBytes": 2365709,
+  "sidePadding": 23,
+  "historyIcon": "list.bullet",
+  "quitConfirmation": {
+    "title": "是否确认退出？",
+    "buttons": [
+      "是",
+      "取消"
+    ],
+    "entryPoints": [
+      "power button on both pages",
+      "Command-Q"
+    ],
+    "presentation": "attached NSAlert sheet"
+  },
+  "userDataUnchangedAfterRestart": true,
+  "installedPath": "/Applications/NowLater.app",
+  "desktopCopy": "Absent before update; not recreated",
+  "checks": [
+    "build and strict code signature",
+    "native input, blank-area and drag regression suite",
+    "notch presentation regression suite",
+    "old desktop process exited gracefully; new installed process is running"
+  ],
+  "desktopMouseAutomationUsed": false
+}

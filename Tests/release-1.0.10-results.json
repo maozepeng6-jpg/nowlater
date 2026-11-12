@@ -1,0 +1,14 @@
+{
+  "version": "1.0.10",
+  "appBytes": 2384702,
+  "installedPath": "/Applications/NowLater.app",
+  "userDataUnchangedAfterRestart": true,
+  "notchInteraction": "Double click same trigger to toggle open/close; one outside click closes; shared local/global routing",
+  "checks": [
+    "notch event routing and presentation regression suite",
+    "native input, blank area, drag and persistence regression suite",
+    "strict code signature and installed binary comparison",
+    "installed process running after graceful update"
+  ],
+  "desktopMouseAutomationUsed": false
+}

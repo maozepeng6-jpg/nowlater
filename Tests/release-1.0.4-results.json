@@ -1,0 +1,21 @@
+{
+  "version": "1.0.4",
+  "appBytes": 1314842,
+  "userTasksUnchanged": true,
+  "summaryCompletedOnly": true,
+  "migrationBackupExists": true,
+  "processes": [
+    "41161 /Applications/NowLater.app/Contents/MacOS/NowLater"
+  ],
+  "tests": [
+    "native Return and keypad Enter",
+    "Shift+Return multiline",
+    "IME Return does not submit",
+    "Unicode Backspace, last character deletes task",
+    "empty-row previous focus",
+    "54 completed-only history tests",
+    "drag and presentation regression",
+    "isolated UI keyboard and history checks"
+  ],
+  "uiHelperStopped": true
+}

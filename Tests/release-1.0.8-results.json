@@ -1,0 +1,17 @@
+{
+  "version": "1.0.8",
+  "appBytes": 2359276,
+  "quitControls": [
+    "task header",
+    "history header"
+  ],
+  "systemQuitVerified": true,
+  "userDataUnchanged": true,
+  "checks": [
+    "Native input and blur persistence regression suite",
+    "54 completed-only history tests",
+    "Installed and desktop signatures verified",
+    "Real installed process exited through standard termination request"
+  ],
+  "desktopMouseAutomationUsed": false
+}

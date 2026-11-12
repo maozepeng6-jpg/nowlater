@@ -1,0 +1,16 @@
+{
+  "version": "1.0.6",
+  "appBytes": 2573956,
+  "userDataUnchanged": true,
+  "statusItemRemoved": true,
+  "appIcon": "AppIcon.icns",
+  "iconRepresentations": 10,
+  "process": "46873 /Applications/NowLater.app/Contents/MacOS/NowLater",
+  "checks": [
+    "codesign verified for desktop and installed app",
+    "notch double-click and collapse regression suite passed",
+    "ICNS alpha and all 10 resolutions verified",
+    "NSWorkspace resolved both application icons"
+  ],
+  "desktopMouseAutomationUsed": false
+}

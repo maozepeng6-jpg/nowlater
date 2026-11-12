@@ -1,0 +1,15 @@
+{
+  "version": "1.0.7",
+  "appBytes": 2332284,
+  "userDataUnchanged": true,
+  "iconEncoding": "RGB+alpha PNG in ICNS",
+  "iconRepresentations": 9,
+  "largestIconPixels": 512,
+  "checks": [
+    "Installed and desktop bundle signatures verified",
+    "NSWorkspace previews rendered from both installed copies",
+    "User task data hashes unchanged",
+    "No FinderInfo/resource-fork overrides used"
+  ],
+  "desktopMouseAutomationUsed": false
+}
