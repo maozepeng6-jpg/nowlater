@@ -498,7 +498,13 @@ private struct InlineTodoInput: View {
             accessibilityLabel: later ? "在稍后添加待办" : "在现在添加待办",
             inset: PanelLayout.sidePadding + 20.5,
             focusRequest: session.target == .draft(later) ? session.request : nil,
-            onCommit: { text, _ in store.add(text, later: later) },
+            onCommit: { text, advance in
+                store.add(text, later: later)
+                if advance {
+                    let blank = store.addBlank(later: later)
+                    session.focus(.task(blank.id))
+                }
+            },
             onEmptyBackspace: { session.previous(before: nil, later: later, store: store) },
             onErased: {},
             onFocus: { active, window in
@@ -756,9 +762,9 @@ final class InlineTodoTextView: NSTextView {
             string = ""
             setSelectedRange(NSRange(location: 0, length: 0))
             onTextChanged()
-            if !text.isEmpty {
+            if keepFocus || !text.isEmpty {
                 if let onCommit { onCommit(text, keepFocus) }
-                else { onSubmit([text]) }
+                else if !text.isEmpty { onSubmit([text]) }
             }
         } else if keepFocus || lastSavedText != text {
             lastSavedText = text
@@ -868,7 +874,9 @@ private struct TodoRowView: View {
                     accessibilityLabel: "编辑待办", inset: 0, focusRequest: session.request,
                     onCommit: { text, advance in
                         store.update(item.id, title: text)
-                        if advance { session.focus(.draft(item.later)) }
+                        if advance, let blank = store.insertBlank(after: item.id) {
+                            session.focus(.task(blank.id))
+                        }
                     },
                     onEmptyBackspace: erase,
                     onErased: erase,

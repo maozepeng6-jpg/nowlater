@@ -189,6 +189,25 @@ final class Store: ObservableObject {
         save()
     }
 
+    /// 回车立刻落一条空白行（带圆圈），之后再往里打字
+    @discardableResult
+    func addBlank(later: Bool) -> Todo {
+        let todo = Todo(title: "", later: later)
+        items.append(todo)
+        save()
+        return todo
+    }
+
+    /// 在某一行正下方插入一条空白行
+    @discardableResult
+    func insertBlank(after id: UUID) -> Todo? {
+        guard let i = items.firstIndex(where: { $0.id == id }) else { return nil }
+        let todo = Todo(title: "", later: items[i].later)
+        items.insert(todo, at: i + 1)
+        save()
+        return todo
+    }
+
     func toggle(_ id: UUID) {
         guard let i = items.firstIndex(where: { $0.id == id }) else { return }
         items[i].done.toggle()
@@ -227,13 +246,9 @@ final class Store: ObservableObject {
         save()
     }
 
-    /// 原地编辑：改文字；清空 = 删掉这一条
+    /// 原地编辑：改文字；空白行合法（在空行上退格才移除这一条）
     func update(_ id: UUID, title: String) {
         let trimmed = title.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else {
-            delete(id)
-            return
-        }
         guard let i = items.firstIndex(where: { $0.id == id }) else { return }
         guard items[i].title != trimmed else { return }
         items[i].title = trimmed

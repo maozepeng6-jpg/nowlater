@@ -205,23 +205,29 @@ struct TodoDragTests {
             expect(input.acceptsFirstMouse(for: nil) && input.editor.acceptsFirstMouse(for: nil),
                    "Blank input must accept the first click in the panel")
             var submitted = 0
-            input.editor.onSubmit = { lines in
-                submitted += lines.count
-                for line in lines { store.add(line, later: later) }
+            // Wire the editor exactly like InlineTodoInput does: Enter materializes
+            // a blank circle row immediately, blur only saves non-empty text.
+            input.editor.onCommit = { text, advance in
+                submitted += 1
+                store.add(text, later: later)
+                if advance { store.addBlank(later: later) }
             }
             expect(window.makeFirstResponder(input.editor), "Native input cannot obtain focus")
             for title in ["新增第一项", "连续输入第二项"] {
                 input.editor.insertText(title, replacementRange: NSRange(location: NSNotFound, length: 0))
                 input.editor.doCommand(by: NSSelectorFromString("insertNewline:"))
                 expect(input.editor.string.isEmpty, "Enter did not leave a fresh blank row")
-                expect(window.firstResponder === input.editor, "Enter lost input focus")
                 expect(store.items.contains { $0.title == title && $0.later == later }, "Entered task was not saved in its group")
             }
             input.editor.doCommand(by: NSSelectorFromString("insertNewline:"))
-            expect(submitted == 2, "Blank Enter created an empty task")
+            expect(submitted == 3, "Blank Enter must also reach the composer")
+            expect(store.section(later: later).filter { $0.title.isEmpty }.count == 3,
+                   "Each Enter must materialize an empty circle row")
             input.editor.insertText("失焦保存", replacementRange: NSRange(location: NSNotFound, length: 0))
             window.makeFirstResponder(nil)
-            expect(submitted == 3, "Blur did not save the typed draft exactly once")
+            expect(submitted == 4, "Blur did not save the typed draft exactly once")
+            expect(store.section(later: later).filter { $0.title.isEmpty }.count == 3,
+                   "Blur must not spawn an extra blank row")
             expect(!window.isVisible, "Headless input regression opened a test window")
         }
         // Exercise real key events as well as doCommand; the two native paths
@@ -306,6 +312,25 @@ struct TodoDragTests {
         let savedInput = Store()
         expect(savedInput.items.filter { $0.title == "连续输入第二项" }.count == 2,
                "Native-input tasks did not survive reloading from disk")
+
+        // Blank rows: Enter materializes empty circle rows; an empty commit keeps
+        // the row (only Backspace on an empty row removes it); insertBlank lands
+        // directly below the source row.
+        let blankStore = Store()
+        blankStore.items = []
+        let firstBlank = blankStore.addBlank(later: false)
+        expect(blankStore.items.count == 1 && firstBlank.title.isEmpty,
+               "addBlank must create exactly one empty row")
+        blankStore.update(firstBlank.id, title: "")
+        expect(blankStore.items.count == 1, "Empty commit must not delete the blank row")
+        guard let belowBlank = blankStore.insertBlank(after: firstBlank.id) else {
+            expect(false, "insertBlank(after:) returned nil")
+            return
+        }
+        expect(blankStore.items.map(\.id) == [firstBlank.id, belowBlank.id],
+               "insertBlank must land directly below the source row")
+        blankStore.update(firstBlank.id, title: "补字")
+        expect(blankStore.items.first?.title == "补字", "Typing into a blank row must save its text")
         // Instantiate the real SwiftUI list offscreen, including its geometry
         // preferences and the native scroll editors. No desktop event injection.
         store.items = []
